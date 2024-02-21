@@ -1,66 +1,69 @@
-<!DOCTYPE html>
-<html ⚡>
+<!doctype html>
+<html ⚡4email data-css-strict>
+    <head>
+        <meta charset="utf-8">
+        <script async src="https://cdn.ampproject.org/v0.js"></script>
+        <script async custom-element="amp-bind" src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"></script>
+        <script async custom-template="amp-mustache" src="https://cdn.ampproject.org/v0/amp-mustache-0.2.js"></script>
+        <script async custom-element="amp-list" src="https://cdn.ampproject.org/v0/amp-list-0.1.js"></script>
+        <style amp4email-boilerplate>
+            body {
+                visibility: hidden;
+            }
+        </style>
+    </head>
 
-<head>
-    <meta charset="utf-8">
-    <title>AMP Shopping Cart</title>
-    <link rel="canonical" href="http://127.0.0.1:8080/index.html">
-    <script async src="https://cdn.ampproject.org/v0.js"></script>
-    <script async custom-element="amp-list" src="https://cdn.ampproject.org/v0/amp-list-0.1.js"></script>
-    <script async custom-element="amp-form" src="https://cdn.ampproject.org/v0/amp-form-0.1.js"></script>
-    <style amp-custom>
-        /* Custom styles for the cart list */
-        .cart-item {
-            margin-bottom: 10px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-    
-        .cart-item p {
-            margin: 0;
-        }
-    
-        .cart-item button {
-            background-color: #dc3545;
-            color: #fff;
-            border: none;
-            border-radius: 3px;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-    </style>
-</head>
-
-<body>
-    <h1>Shopping Cart</h1>
-
-    <!-- Product list -->
-    <amp-list src="http://localhost:3000/products" layout="flex-item" binding="no">
-        <template type="amp-mustache">
+    <body>
+        <!-- Your product listings -->
             <div>
-                <h2>{{name}}</h2>
-                <p>Price: ${{price}}</p>
-                <form method="post" action-xhr="http://localhost:3000/cart/add" target="_top">
-                    <input type="hidden" name="productId" value="{{id}}">
-                    <input type="submit" value="Add to Cart">
-                </form>
+                <h2>Product 1</h2>
+                <p>$10</p>
+                <button on="tap:AMP.setState({ products: [products.concat({ id: 1, title: 'Product 1', price: 10 }]) })">Add to
+                    Cart</button>
+            
             </div>
-        </template>
-    </amp-list>
-
-    <!-- Shopping Cart -->
-    <h2>Your Cart</h2>
-    <amp-list src="http://localhost:3000/cart" layout="fixed-height" height="80" binding="refresh" items="responseData">
-        <template type="amp-mustache">
-            {{#responseData}}
-                <p>{{name}} - ${{price}}</p>
-                <form method="post" action-xhr="http://localhost:3000/cart/remove/{{id}}" target="_top">
-                    <input type="submit" value="Remove">
-                </form>
-            {{/responseData}}
-        </template>
-    </amp-list>
-</body>
-
+            <div>
+                <h2>Product 2</h2>
+                <p>$20</p>
+                <button on="tap:AMP.setState({ products: [...products, { id: 2, title: 'Product 2', price: 20 }] })">Add to
+                    Cart</button>
+            </div>
+            
+            <!-- Shopping Cart -->
+            <!-- <amp-list 
+                layout="responsive" 
+                height="100px" 
+                width="500px" 
+                src="https://dummyjson.com/carts/"
+                binding="refresh">
+                <template type="amp-mustache" id="cart-items">
+                    {{#isEmpty}}
+                    <h3>Your Basket is Empty. </h3>
+                    {{/isEmpty}}
+                    {{^isEmpty}}
+                    {{#cartItems}}
+                    <div>{{name}} - {{price}} <button
+                        on="tap:AMP.setState({ cartItems: cartItems.filter(item => item.id !== {{id}}) })">Remove</button></div>
+                    {{/cartItems}}
+                    {{/isEmpty}}
+                </template>
+            </amp-list> -->
+            <amp-list layout="fixed-height" height="100" src="https://fakestoreapi.com/products/" binding="refresh">
+                <template type="amp-mustache">
+                    {{#products}}
+                    <div>Product: {{title}}, Price: ${{price}}</div>
+                    {{/products}}
+                    {{^products}}
+                    <div>Your cart is empty.</div>
+                    {{/products}}
+                </template>
+            </amp-list>
+        <amp-state id="products">
+            <script type="application/json">
+                {
+                    "products": []
+                }
+                </script>
+        </amp-state>
+    </body>
 </html>
