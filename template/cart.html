@@ -75,16 +75,6 @@
             justify-content: flex-start;
         }
     </style>
-
-    <!-- ## Metadata -->
-    <!-- The page indexing requires schema.org markup for one of the following types: Type, AggregateRating, Offers. [Learn more](https://developers.google.com/structured-data/carousels/top-stories#markup_specification). -->
-    <script type="application/ld+json">
-    {
-      "@context": "http://schema.org",
-      "@type": "ItemList",
-      "items": []
-    }
-    </script>
 </head>
 
 <body>
@@ -111,11 +101,15 @@
     </form>
     <div class="shopping-cart">
         <amp-list layout="responsive" height="100px" width="500px"
-            src="https://amp.dev/static/samples/json/related_products.json" binding="refresh">
+            src="https://amp.dev/static/samples/json/related_products.json" binding="no">
             <template type="amp-mustache" id="cart-items">
 
+                {{#isEmpty}}
                 <h3>Your Basket is Empty. </h3>
-                {{#products}}
+                {{/isEmpty}}
+                {{^isEmpty}}
+
+                {{#items}}
                 <div class="item-headline">{{name}} - {{price}}</div>
                 <div class="item-details">
                     <div class="item-attribute">Color: {{color}}</div>
@@ -125,16 +119,49 @@
                                         }}), form-cart-delete.submit">X</button>
                 </div>
                 <br>
-                {{/products}}
+                {{/items}}
+                {{/isEmpty}}
             </template>
         </amp-list>
     </div>
+    <form id="form-cart-delete" method="POST"
+        action-xhr="https://amp.dev/documentation/examples/e-commerce/shopping_cart/delete-cart-item" on="submit-success: AMP.setState({
+                    cartItemsList: event.response
+                })" novalidate>
+        <input type="hidden" name="id" value [value]="cartItem.id">
+        <input type="hidden" name="size" value [value]="cartItem.size">
+    </form>
 
-    <amp-state id="products">
+    <amp-state id="cartItemsList">
         <script type="application/json">
         {
+            "items": [
+                {
+                    "id": "1",
+                    "name": "Product 1",
+                    "price": "$10",
+                    "color": "Blue",
+                    "size": "M",
+                    "quantity": 1
+                },
+                {
+                    "id": "2",
+                    "name": "Product 2",
+                    "price": "$20",
+                    "color": "Red",
+                    "size": "L",
+                    "quantity": 2
+                }
+            ]
         }
         </script>
+    </amp-state>
+    <amp-state id="cartItem">
+        <script type="application/json">
+            {
+    
+            }
+            </script>
     </amp-state>
 </body>
 </html>
