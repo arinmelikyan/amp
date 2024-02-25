@@ -2,7 +2,7 @@
 <html ⚡4email data-css-strict lang="en">
 
 <head>
-    <!-- amp4email boilerplate. remember some of the components and custom JS scripts are restricted in email templates -->
+    <!-- amp4email boilerplate. some of the components and custom JS scripts are restricted in email templates -->
     <meta charset="utf-8">
     <script async src="https://cdn.ampproject.org/v0.js"></script>
     <script async custom-element="amp-bind" src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"></script>
@@ -66,7 +66,7 @@
     <div class="shopping-cart">
         <!-- fetching data from API and rendering in the list -->
         <amp-list layout="responsive" height="100px" width="500px"
-            src="https://amp.dev/static/samples/json/related_products.json" binding="no">
+            src="https://amp.dev/static/samples/json/related_products.json" binding="refresh">
             <template type="amp-mustache" id="cart-items">
                 <div class="item-details">
                     <div class="item-headline">{{name}} - {{price}}</div>
