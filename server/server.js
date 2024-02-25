@@ -25,7 +25,7 @@ app.use(cors());
 
 // Route to fetch products
 app.get('/products', (req, res) => {
-    res.json(products);
+    res.json({ items: products });
 });
 
 app.get('/cart', (req, res) => {
@@ -36,7 +36,7 @@ app.get('/cart', (req, res) => {
             price: item.price,
         };
     });
-    res.json({responseData: cartItems});
+    res.json({items: cartItems});
 });
 
 // Route to add item to the shopping cart

@@ -30,11 +30,11 @@
             </div>
             
             <!-- Shopping Cart -->
-            <!-- <amp-list 
+            <amp-list 
                 layout="responsive" 
                 height="100px" 
                 width="500px" 
-                src="https://dummyjson.com/carts/"
+                src="https://ampbyexample.com/json/cart.json"
                 binding="refresh">
                 <template type="amp-mustache" id="cart-items">
                     {{#isEmpty}}
@@ -46,16 +46,6 @@
                         on="tap:AMP.setState({ cartItems: cartItems.filter(item => item.id !== {{id}}) })">Remove</button></div>
                     {{/cartItems}}
                     {{/isEmpty}}
-                </template>
-            </amp-list> -->
-            <amp-list layout="fixed-height" height="100" src="https://fakestoreapi.com/products/" binding="refresh">
-                <template type="amp-mustache">
-                    {{#products}}
-                    <div>Product: {{title}}, Price: ${{price}}</div>
-                    {{/products}}
-                    {{^products}}
-                    <div>Your cart is empty.</div>
-                    {{/products}}
                 </template>
             </amp-list>
         <amp-state id="products">
