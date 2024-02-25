@@ -2,6 +2,7 @@
 <html ⚡4email data-css-strict lang="en">
 
 <head>
+    <!-- amp4email boilerplate. remember some of the components and custom JS scripts are restricted in email templates -->
     <meta charset="utf-8">
     <script async src="https://cdn.ampproject.org/v0.js"></script>
     <script async custom-element="amp-bind" src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"></script>
@@ -15,24 +16,13 @@
     </style>
     <script async custom-element="amp-form" src="https://cdn.ampproject.org/v0/amp-form-0.1.js"></script>
     <style amp-custom>
-        .items,
-        amp-list.items>div {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap
-        }
-
-        .item {
-            flex-grow: 1;
-            flex-shrink: 1
-        }
-
         /* global style in order to bind global style in the iframe */
         html,
         body {
             font-size: 16px;
             font-family: 'Noto Sans', sans-serif;
             color: #48525C;
+            text-align: center;
         }
 
         p {
@@ -45,48 +35,62 @@
             color: #005AF0;
         }
 
-        .ampstart-btn {
-            margin-top: 1.5rem;
-            margin-bottom: .75em;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 700;
-            line-height: 1.2em;
-            font-size: 1em;
-            color: #fff;
-            display: inline-block;
-            padding: 0.75em 1.75em;
-            border-radius: 3px;
-            background-color: #005AF0;
-            border: none;
-            cursor: pointer;
-        }
-
         p.name {
             color: gold;
         }
 
-        div.square {
-            width: 40px;
-            height: 40px;
+        .shopping-cart {
+            max-width: 500px;
+            margin: 0 auto;
         }
 
-        .items,
-        amp-list.items>div {
-            justify-content: flex-start;
+        .item-headline {
+            font-weight: bold;
+        }
+
+        .item-details {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .add-button,
+        .delete-button {
+            width: 200px;
+            height: 50px;
         }
     </style>
 </head>
 
 <body>
     <h2 class="m1">Shopping cart</h2>
-    <form id="order" method="POST" action-xhr="https://amp.dev/documentation/examples/api/submit-form-input-text-xhr/" class="flex flex-wrap m1">
-        <h3>Product 1</h3>
-        <div>Product description: product.</div>
+    <div class="shopping-cart">
+        <!-- fetching data from API and rendering in the list -->
+        <amp-list layout="responsive" height="100px" width="500px"
+            src="https://amp.dev/static/samples/json/related_products.json" binding="no">
+            <template type="amp-mustache" id="cart-items">
+                <div class="item-details">
+                    <div class="item-headline">{{name}} - {{price}}</div>
+                    <div class="item-attribute">Color: {{color}}</div>
+                </div>
+                <div class="btn-block">
+                    <button type="button" class="add-button"
+                        on="tap: AMP.setState({cartItem: { id: '{{id}}' }}), form-cart-add.submit">Add to cart</button>
+                    <button type="button" class="delete-button"
+                        on="tap: AMP.setState({cartItem: { id: '{{id}}' }}), form-cart-delete.submit">Remove from
+                        cart</button>
+                </div>
+                <br>
+            </template>
+        </amp-list>
+    </div>
 
-        <div class="items-center flex my1">
-            <input type="submit" class="ampstart-btn caps" name="add-to-cart" value="add to cart">
-        </div>
-        <input type="hidden" name="title" value="Apple">
+    <!-- example of xhr requests im amp4email -->
+    <form id="form-cart-add" method="POST"
+        action-xhr="https://amp.dev/documentation/examples/api/submit-form-input-text-xhr/" on="submit-success: AMP.setState({
+                            cartItemsList: event.response
+                        })" novalidate>
+        <!-- example of how to pass data to post request body, use hidden inputs inside the form -->
+        <input type="hidden" name="id" value="cartItem.id">
         <div submit-error>
             <template type="amp-mustache">
                 Error! Looks like something went wrong with your shopping cart, please try to add an item again.
@@ -99,69 +103,41 @@
             </template>
         </div>
     </form>
-    <div class="shopping-cart">
-        <amp-list layout="responsive" height="100px" width="500px"
-            src="https://amp.dev/static/samples/json/related_products.json" binding="no">
-            <template type="amp-mustache" id="cart-items">
 
-                {{#isEmpty}}
-                <h3>Your Basket is Empty. </h3>
-                {{/isEmpty}}
-                {{^isEmpty}}
-
-                {{#items}}
-                <div class="item-headline">{{name}} - {{price}}</div>
-                <div class="item-details">
-                    <div class="item-attribute">Color: {{color}}</div>
-                    <button type="button" class="delete-button" on="tap: AMP.setState({cartItem:
-                                        { id: '{{id}}',
-                                          size: '{{size}}'
-                                        }}), form-cart-delete.submit">X</button>
-                </div>
-                <br>
-                {{/items}}
-                {{/isEmpty}}
-            </template>
-        </amp-list>
-    </div>
     <form id="form-cart-delete" method="POST"
-        action-xhr="https://amp.dev/documentation/examples/e-commerce/shopping_cart/delete-cart-item" on="submit-success: AMP.setState({
+        action-xhr="https://amp.dev/documentation/examples/api/submit-form-input-text-xhr/" on="submit-success: AMP.setState({
                     cartItemsList: event.response
                 })" novalidate>
-        <input type="hidden" name="id" value [value]="cartItem.id">
-        <input type="hidden" name="size" value [value]="cartItem.size">
+         <!-- example of how to pass data to post request body, use hidden inputs inside the form  -->
+        <input type="hidden" name="id" value="cartItem.id">
+        <div submit-error>
+            <template type="amp-mustache">
+                Error! Looks like something went wrong with your shopping cart, please try to add an item again.
+                {{error}}
+            </template>
+        </div>
+        <div submit-success>
+            <template type="amp-mustache">
+                Removed from cart
+            </template>
+        </div>
     </form>
 
+    <!-- AMP state -->
     <amp-state id="cartItemsList">
         <script type="application/json">
-        {
-            "items": [
-                {
-                    "id": "1",
-                    "name": "Product 1",
-                    "price": "$10",
-                    "color": "Blue",
-                    "size": "M",
-                    "quantity": 1
-                },
-                {
-                    "id": "2",
-                    "name": "Product 2",
-                    "price": "$20",
-                    "color": "Red",
-                    "size": "L",
-                    "quantity": 2
-                }
-            ]
-        }
+            {
+
+            }
         </script>
     </amp-state>
     <amp-state id="cartItem">
         <script type="application/json">
             {
-    
+
             }
-            </script>
+        </script>
     </amp-state>
 </body>
+
 </html>
